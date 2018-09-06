@@ -1,25 +1,17 @@
-import time
+import json
 
 from webdriver_wrapper import WebDriverWrapper
 
 
-def lambda_handler(*args, **kwargs):
+def lambda_handler(event, context):
+    url = event.get('queryStringParameters', {}).get('url', 'https://www.google.com/')
+    print('Received url {} to parse'.format(url))
+
     driver = WebDriverWrapper()
+    driver.get_url(url)
 
-    driver.get_url('https://www.google.es/')
-
-    driver.set_input_value('//input[@id="lst-ib"]', '21 buttons')
-
-    driver.click('//center//img[@alt="Google"]')
-    time.sleep(0.5)
-
-    driver.click('//input[@name="btnK"]')
-    time.sleep(0.5)
-
-    first_google_result_title = driver.get_inner_html('(//div[@class="rc"]//a)[1]')
-
-    print("--------------------------")
-    print(first_google_result_title)
-    print("--------------------------")
+    first_title = driver.get_inner_html('(//h1)[1]') or 'nope'
 
     driver.close()
+
+    return json.dumps({'res': first_title})
