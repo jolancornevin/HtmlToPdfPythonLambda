@@ -1,9 +1,18 @@
+import logging
 import json
 
 from webdriver_wrapper import WebDriverWrapper
 
 
+logger = logging.getLogger()
+
+
 def error(title):
+    """
+    Return a valid API Gateaway error response.
+    """
+    logger.error(title)
+
     return json.dumps({
         "isBase64Encoded": False,
         "statusCode": 403,
@@ -17,7 +26,7 @@ def lambda_handler(event, context):
     if not url:
         return error("You must provide a GET url parameter")
 
-    print('Received url {} to parse'.format(url))
+    logger.info('Received url {} to parse'.format(url))
 
     driver = WebDriverWrapper()
     driver.get_url(url)
