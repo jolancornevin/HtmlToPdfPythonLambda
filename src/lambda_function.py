@@ -14,4 +14,8 @@ def lambda_handler(event, context):
 
     driver.close()
 
-    return json.dumps({'res': first_title})
+    return json.dumps({
+        "isBase64Encoded": False,
+        "statusCode": 200,
+        "body": first_title
+    })
