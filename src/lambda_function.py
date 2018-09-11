@@ -1,10 +1,13 @@
+import base64
 import logging
 import json
 
-from webdriver_wrapper import WebDriverWrapper
+import pdfkit
 
 
 logger = logging.getLogger()
+
+configuration = pdfkit.configuration(wkhtmltopdf='./bin/vendor/wkhtmltopdf')
 
 
 def error(title):
@@ -28,15 +31,15 @@ def lambda_handler(event, context):
 
     logger.info('Received url {} to parse'.format(url))
 
-    driver = WebDriverWrapper()
-    driver.get_url(url)
+    pdf_file_from_url = pdfkit.from_url(url, False, configuration=configuration)
 
-    first_title = driver.get_inner_html('(//h1)[1]') or 'nope'
-
-    driver.close()
-
-    return json.dumps({
-        "isBase64Encoded": False,
+    return {
         "statusCode": 200,
-        "body": first_title
-    })
+        "body": base64.b64encode(pdf_file_from_url).decode('ascii'),
+        "isBase64Encoded": True,
+        "headers": {
+            "Accept": "application/pdf",
+            "Content-Type": "application/pdf",
+            "Content-disposition": "attachment; filename=\"test_generation.pdf\""
+        }
+    }

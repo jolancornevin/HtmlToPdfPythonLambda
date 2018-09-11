@@ -3,18 +3,16 @@ clean:
 	rm -rf __pycache__
 
 fetch-dependencies:
+ifeq (,$(wildcard ./bin/vendor/wkhtmltopdf))
 	mkdir -p bin/
+	mkdir -p bin/vendor/
 
-	# Get chromedriver
-	curl -SL https://chromedriver.storage.googleapis.com/2.32/chromedriver_linux64.zip > chromedriver.zip
-	unzip chromedriver.zip -d bin/
-
-	# Get Headless-chrome
-	curl -SL https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-29/stable-headless-chromium-amazonlinux-2017-03.zip > headless-chromium.zip
-	unzip headless-chromium.zip -d bin/
-
-	# Clean
-	rm headless-chromium.zip chromedriver.zip
+	echo "Installing wkhtmltopdf."
+	wget -qO- https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz | tar xpJ
+	cp wkhtmltox/bin/wkhtmltopdf ./bin/vendor/
+	cp wkhtmltox/bin/wkhtmltopdf ./bin/
+	rm -rf wkhtmltox/
+endif
 
 docker-build:
 	docker-compose build
