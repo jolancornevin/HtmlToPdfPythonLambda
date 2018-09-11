@@ -6,9 +6,10 @@ Inspired from https://github.com/21Buttons/pychromeless
 #### Installation
 You must have docker and Docker compose installed. 
 Virtualenv your project if you want to (`virtualenv . -p /usr/local/bin/python3`, `source bin/activate`)
-run `make fetch-dependencies`
+run `make fetch-dependencies`.
 
 #### Run 
+`make fetch-dependencies`
 `make docker-run`
 
 ### On Production
@@ -27,8 +28,8 @@ Following those steps:
         - upload the zip that you've created with the makefile function. (if it's too big, upload it to s3)
         - in the handler set the path to your function like: module.file_name.method_name
     - in the environnement variable
-        - PYTHONPATH=/var/task/src:/var/task/lib
-        - PATH=/var/task/bin
+        - `PYTHONPATH=/var/task/src:/var/task/lib`
+        - `PATH=/var/task/bin`
     - in the basic setting section
         - Timeout: +10 seconds
         - Memory: + 250MB
@@ -52,6 +53,9 @@ Now that you have an open API gateaway, you just have to use it's url and do a G
 > https://docs.aws.amazon.com/lambda/latest/dg/lambda-app.html
 
 So basically, AWS can run any python code with any dependancies if you install them in a directory and zip it. For automation, this step is done in a Makefile, the `build-lambda-package`.
+
+### Generation of PDF
+It's base on the [pdfkit](https://github.com/JazzCore/python-pdfkit) package, which rely on [wkhtmltopdf](https://wkhtmltopdf.org/).
 
 ## TODO
 - make it work with pdfkit
